@@ -1,8 +1,23 @@
 <style>
-table.table tbody tr td:nth-child(1) { width: 24px; }
-table.table tbody tr td:nth-child(3) { width: 150px; }
-table.table tbody tr td:nth-child(4) { width: 150px; }
-table.table tbody tr td:nth-child(5) { width: 24px; }
+
+table.propList td {
+    font-size: 13px;
+	color: #333333;
+    font-family: Monaco,Menlo,Consolas,"Courier New",monospace;	
+	border-width: 0;
+	padding: 0 5px;
+}
+
+table.propList td:nth-child(1) { width: 100px; color: #0088cc; }
+table.propList td:nth-child(2) { width: 200px; color: #880000; }
+
+table.propList {
+	width: 100%;
+    background-color: #F5F5F5;
+    margin: 0 0 10px;
+    padding: 9.5px;
+	border-radius: 4px;
+}
 </style>
 	
 <ul class="breadcrumb">
@@ -19,13 +34,19 @@ table.table tbody tr td:nth-child(5) { width: 24px; }
 </div>
 	
 <table class="table">
-	<thead><tr><th></th><th>Model Name</th><th>Properties</th><th></th></tr></thead>
+	<thead><tr><th>Model Name</th><th>Properties</th><th></th></tr></thead>
 	<tbody>
-		<tr ng-repeat="model in api.models">
-			<td><i class="icon-th" style="cursor: move"></i></td>
-			<td><a>{{model.name}}</a></td>
-			<td>{{model.properties.size()}}</td>
-			<td><a><i class="icon-trash"></i></a></td>
+		<tr ng-repeat="(id,model) in api.models">
+			<td><a>{{id}}</a></td>
+			<td>
+				<table class="propList">
+					<tr ng-repeat="(propName,propDef) in model.properties">
+						<td><a data-toggle="modal" data-target="#popProperty" class='prop-label'>{{propName}}</a></td>
+						<td>: {{propDef.type}}<span ng-show="propDef.type == 'Array'">&lt;{{propDef.items.type}}{{propDef.items.$ref}}&gt;</span></td>
+						<td>{{propDef.description}}</td>
+					</tr>
+				</table>
+			</td>
 		</tr>
 		<tr><td></td><td colspan="4">
 			<button type="button" class="btn" >New Resource...</button>
@@ -38,32 +59,29 @@ table.table tbody tr td:nth-child(5) { width: 24px; }
 </div>
 		
 
-<div id="popRule" class="modal hide fade">
+<div id="popProperty" class="modal hide">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>Accept-Policy Rule</h3>
+    <h3>Property</h3>
   </div>
   <div class="modal-body">
     <form>
-    	<label>HTTP Method:</label>
-    	<select class="span4" ng-model="currentRule.method">
-    		<option>(any)</option>
-    		<option>GET</option>
-    		<option>PUT</option>
-    		<option>POST</option>
-    		<option>DELETE</option>
+    	<label>Name:</label>
+		<input type="text"/>
+		
+		<label>Type:</label>
+    	<select class="span4">
+    		<option>string</option>
+    		<option>integer</option>
+    		<option>double</option>
+    		<option>boolean</option>
+    		<option>Array</option>
     	</select>
     	
-    	<label>URL:</label>
-    	<input type="text" class="span11" placeholder="(Wildcard * supported. e.g. /orders/* )" ng-model="currentRule.uri"/>
-    	
-    	<label>Hours-of-day:</label>
-    	<input type="text" class="span11" placeholder="(comma-separated integer ranges, e.g. 8,9,10-18,20-23. Leave blank for 0-23)" ng-model="currentRule.times"/>
-    	
-    	<label>Limits:</label>
-    	<input type="text" class="span1" ng-model="currentRule.rate.max"/> calls/second; reject excess calls with HTTP <input type="text" class="span2" placeholder="429" ng-model="currentRule.rate.rejectWith"/><br/>
-    	<input type="text" class="span1" ng-model="currentRule.size.max"/> kb/call; reject larger calls with HTTP <input type="text" class="span2" placeholder="413" ng-model="currentRule.size.rejectWith"/><br/>
-
+    	<label>Inner type:</label>
+    	<select class="span4">
+    		<option ng-repeat="(id,model) in api.models">{{id}}</option>
+    	</select>
     </form>
   </div>
   <div class="modal-footer">

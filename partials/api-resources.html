@@ -1,0 +1,94 @@
+<style>
+table.table tbody tr td:nth-child(1) { width: 200px; }
+table.table tbody tr td:nth-child(3) { width: 300px; }
+table.table tbody tr td:nth-child(4) { width: 100px; }
+table.table tbody tr td:nth-child(5) { width: 24px; }
+</style>
+	
+<ul class="breadcrumb">
+	<li><a href="#home">Home</a> <span class="divider">/</span></li>
+	<li><a href="#apis">APIs</a> <span class="divider">/</span></li>
+	<li class="active">{{api.name}}</li>
+</ul>
+
+<h2>{{api.name}} - Resources</h2>
+
+<div class="alert alert-info fade in">
+<button type="button" class="close" data-dismiss="alert">×</button>
+<p>Uma <b>API</b> representa um agrupamento de Resources, normalmente visando uma organização que reflete as necessidades do negócio.</p>
+</div>
+
+
+		
+<table class="table">
+	<thead><tr><th>Resource Path</th><th>Description</th><th>Supported Methods</th><th></th></tr></thead>
+	<tbody>
+		<tr ng-repeat="resource in api.resources">
+			<td><a>{{resource.path}}</a></td>
+			<td>{{resource.summary}}</td>
+			<td>GET, POST</td>
+			<td><a href="#api-operations"><i class="icon-edit"></i></a></td>
+		</tr>
+	</tbody>			 
+</table>
+
+
+<button class="btn btn-primary">New Resource</button>
+
+		
+
+<div id="popRule" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Accept-Policy Rule</h3>
+  </div>
+  <div class="modal-body">
+    <form>
+    	<label>HTTP Method:</label>
+    	<select class="span4" ng-model="currentRule.method">
+    		<option>(any)</option>
+    		<option>GET</option>
+    		<option>PUT</option>
+    		<option>POST</option>
+    		<option>DELETE</option>
+    	</select>
+    	
+    	<label>URL:</label>
+    	<input type="text" class="span11" placeholder="(Wildcard * supported. e.g. /orders/* )" ng-model="currentRule.uri"/>
+    	
+    	<label>Hours-of-day:</label>
+    	<input type="text" class="span11" placeholder="(comma-separated integer ranges, e.g. 8,9,10-18,20-23. Leave blank for 0-23)" ng-model="currentRule.times"/>
+    	
+    	<label>Limits:</label>
+    	<input type="text" class="span1" ng-model="currentRule.rate.max"/> calls/second; reject excess calls with HTTP <input type="text" class="span2" placeholder="429" ng-model="currentRule.rate.rejectWith"/><br/>
+    	<input type="text" class="span1" ng-model="currentRule.size.max"/> kb/call; reject larger calls with HTTP <input type="text" class="span2" placeholder="413" ng-model="currentRule.size.rejectWith"/><br/>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+	<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="addRule()">Save changes</a>
+  </div>
+</div>
+
+
+<script>
+$(function() {
+
+	$("table.table tbody").sortable({
+		handle: 'td:first', 
+		helper: function(e, tr) {
+			var $originals = tr.children();
+			var $helper = tr.clone();
+			$helper.children().each(function(index) {
+				// Set helper cell sizes to match the original sizes
+				$(this).width($originals.eq(index).width())
+			});
+			return $helper;
+  		}}).disableSelection();
+  		
+  	$("#btnNewRule").click(function() { $("#popRule").modal("show"); });
+  	
+  	$("i.icon-info-sign").tooltip();
+});
+</script>

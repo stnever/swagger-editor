@@ -1,0 +1,50 @@
+<ul class="breadcrumb">
+	<li><a href="#home">Home</a> <span class="divider">/</span></li>
+	<li class="active">APIs</li>
+</ul>
+
+<h1>APIs</h1>
+<div class="alert alert-info fade in">
+<button type="button" class="close" data-dismiss="alert">×</button>
+<p>Abaixo estão listadas todas as APIs que você tem permissão de administrar. Você pode criar novas APIs ou dar acesso de administração a
+outros usuários.</p>
+</div>
+			
+<table class="table">
+	<tr><th>API</th><th>Description</th><th>Base Path</th><th>Details</th></tr>
+	<tbody>
+		<tr ng-repeat="api in apis">
+			<td><a data-toggle="modal" data-target="#popApi">{{api.name}}</a></td>
+			<td>{{api.description}}</td>
+			<td>{{api.basePath}}</td>
+			<td><a href="#apis/{{api.basePath}}/resources">Resources</a> (5), <a href="#apis{{api.basePath}}/models">Models</a> (3)</td>
+		</tr>
+	</tbody>
+</table>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#popApi">Criar Nova API</button>
+
+<div id="popApi" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>API Summary</h3>
+  </div>
+  <div class="modal-body">
+    <form>
+    	<label>Name:</label>
+    	<input type="text" class="span12"/>
+    	
+    	<label>Description:</label>
+    	<textarea class="span12" rows="5"></textarea>
+
+    	<label>Base Domain:</label>
+    	<input type="text" class="span12"/>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+	<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+    <button type="button" class="btn btn-primary">Save</a>
+  </div>
+</div>
+

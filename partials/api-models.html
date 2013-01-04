@@ -18,6 +18,9 @@ table.propList {
     padding: 9.5px;
 	border-radius: 4px;
 }
+
+.modal-backdrop.in { opacity: 0.1; }
+label.radio { display: inline-block; }
 </style>
 	
 <ul class="breadcrumb">
@@ -41,8 +44,8 @@ table.propList {
 			<td>
 				<table class="propList">
 					<tr ng-repeat="(propName,propDef) in model.properties">
-						<td><a data-toggle="modal" data-target="#popProperty" class='prop-label'>{{propName}}</a></td>
-						<td>: {{propDef.type}}<span ng-show="propDef.type == 'Array'">&lt;{{propDef.items.type}}{{propDef.items.$ref}}&gt;</span></td>
+						<td><a ng-click="editProp(propDef)" class='prop-label'>{{propName}}</a></td>
+						<td>: {{propDef.type}}<span ng-show="containers.indexOf(propDef.type) != -1">&lt;{{propDef.innerType}}&gt;</span></td>
 						<td>{{propDef.description}}</td>
 					</tr>
 				</table>
@@ -66,28 +69,78 @@ table.propList {
   </div>
   <div class="modal-body">
     <form>
-    	<label>Name:</label>
-		<input type="text"/>
 		
-		<label>Type:</label>
-    	<select class="span4">
-    		<option>string</option>
-    		<option>integer</option>
-    		<option>double</option>
-    		<option>boolean</option>
-    		<option>Array</option>
-    	</select>
-    	
-    	<label>Inner type:</label>
-    	<select class="span4">
-    		<option ng-repeat="(id,model) in api.models">{{id}}</option>
-    	</select>
+    	<label>Name:</label>
+		<input type="text" ng-model="selectedProp.name"/>
+		
+		<label>Description:</label>
+		<input type="text" ng-model="selectedProp.description"/>
+		
+		<div class="row-fluid">
+		<div class="span6">
+			<label>Type:</label>
+			<select class="span12" ng-model="selectedProp.type">
+				<optgroup label="Primitives">
+					<option ng-repeat="t in primitives">{{t}}</option>
+				</optgroup>
+				<optgroup label="Complex Types">
+					<option ng-repeat="(id,def) in api.models">{{id}}</option>
+				</optgroup>
+				<optgroup label="Containers">
+					<option ng-repeat="t in containers">{{t}}</option>
+				</optgroup>
+			</select>
+		</div>
+		<div class="span6" ng-show="containers.indexOf(selectedProp.type) != -1">
+			<label>Inner Type:</label>
+			<select class="span12" ng-model="selectedProp.innerType">
+				<optgroup label="Primitives">
+					<option ng-repeat="t in primitives">{{t}}</option>
+				</optgroup>
+				<optgroup label="Complex Types">
+					<option ng-repeat="(id,def) in api.models">{{id}}</option>
+				</optgroup>
+			</select>
+		</div>
+		</div>
+		
+		<!--
+		<div>
+			<label class="radio">
+				<input type="radio" name="optionsRadios" value="primitive" ng-bind="selectedProp.valueType">
+				Primitive:
+			</label>
+			<select class="span4" ng-model="selectedProp.type" ng-options="t for t in primitives"></select>
+		</div>
+
+		<div>
+			<label class="radio">
+				<input type="radio" name="optionsRadios" value="complex" ng-bind="selectedProp.valueType">
+				Complex Type:
+			</label>
+			<select class="span4" ng-model="selectedProp.type" ng-options="id for (id,def) in api.models"></select>
+		</div>
+
+		<div>
+			<label class="radio">
+				<input type="radio" name="optionsRadios" value="container" ng-bind="selectedProp.valueType">
+				Container:
+			</label>
+			<select class="span4" ng-model="selectedProp.type" ng-options="c for c in containers"></select>
+			of
+			<select class="span4" ng-model="selectedProp.type" ng-options="t for t in primitives"></select>
+		</div>
+		-->
+    
+		<p>All changes saved automatically.</p>
     </form>
   </div>
+  <!--
   <div class="modal-footer">
 	<button type="button" class="btn" data-dismiss="modal">Cancel</button>
     <button type="button" class="btn btn-primary" ng-click="addRule()">Save changes</a>
   </div>
+  -->
 </div>
 
 

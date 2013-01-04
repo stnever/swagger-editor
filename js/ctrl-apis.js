@@ -31,4 +31,12 @@ function ApiModelsController( $scope ) {
 		"Tag":{"id":"Tag","properties":{"id":{"type":"long"},"name":{"type":"string"}}}
 		}
 	}
+	
+	$scope.primitives = [ "string", "boolean", "date", "int", "long", "float", "double", "byte" ];
+	$scope.containers = [ "List", "Set", "Array" ];
+	
+	$scope.editProp = function(prop) {
+		$scope.selectedProp = prop;
+		$("#popProperty").modal("show");
+	}
 }

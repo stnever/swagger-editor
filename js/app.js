@@ -18,7 +18,7 @@ angular.module('swagger-editor', [])
     }] )
     .filter('trim', function() {
         return function(s) {
-        	if ( s == null ) return "";
+        	if ( s == null ) return ";
         	if ( s.length < 100 ) return s;
         	var i = s.lastIndexOf( ' ', 90 )
             return s.substr( 0, i ) + " (...)";

@@ -1,14 +1,28 @@
-﻿var _allApis = [
-	{ id: 1, name: "Users API", basePath: "/users", description: "Manage users" },
-	{ id: 2, name: "Pets API", basePath: "/pets", description: "Manage pets" }
-];
+﻿function ApisController( $rootScope, $scope, ApiService ) {
 
-function ApisController( $scope ) {
-	$scope.apis = _allApis;
-}
+	$rootScope.help = {
+		header: "API Listing",
+		contents: "This page displays all the APIs in the current session. You can create a new API or import one from an URL using the \"Import\" link above."
+	}
 
-function EditApiController( $scope, $routeParams ) {
-	$scope.api = findFirst( _allApis, function(a) { return a.id == $routeParams.id } );
+	$scope.apis = ApiService.findAll();
+	
+	$scope.editApi = function(api) { $scope.currentApi = angular.copy(api); }
+	$scope.newApi  = function()    { $scope.currentApi = {}; }
+	$scope.saveApi = function() {
+		ApiService.save( $scope.currentApi );
+		$scope.currentApi = null;
+		$("#popApi").modal('hide');
+	}
+	$scope.confirmDelete = function(api) { $scope.apiToDelete = api; }
+	$scope.deleteApi = function() {
+		ApiService.remove( $scope.apiToDelete.id );
+		$("#popConfirmDeleteApi").modal('hide');
+	}
+	
+	// puts focus on each modal's first input when it is shown
+	$("#popApi").on("shown", function() { $(this).find("input").get(0).focus(); });
+	$("#popConfirmDeleteApi").on("shown", function() { $(this).find(".btn").get(0).focus(); });
 }
 
 function ApiResourcesController( $scope ) {

@@ -1,28 +1,30 @@
 <ul class="breadcrumb">
-	<li><a href="#home">Home</a> <span class="divider">/</span></li>
+	<li><a href="#apis">Home</a> <span class="divider">/</span></li>
 	<li class="active">APIs</li>
 </ul>
 
 <h1>APIs</h1>
-<div class="alert alert-info fade in">
-<button type="button" class="close" data-dismiss="alert">×</button>
-<p>Abaixo estão listadas todas as APIs que você tem permissão de administrar. Você pode criar novas APIs ou dar acesso de administração a
-outros usuários.</p>
-</div>
 			
 <table class="table">
 	<tr><th>API</th><th>Description</th><th>Base Path</th><th>Details</th></tr>
 	<tbody>
 		<tr ng-repeat="api in apis">
-			<td><a data-toggle="modal" data-target="#popApi">{{api.name}}</a></td>
+			<td><a data-toggle="modal" data-keyboard="true" href="#popApi" ng-click="editApi(api)">{{api.name}}</a></td>
 			<td>{{api.description}}</td>
 			<td>{{api.basePath}}</td>
-			<td><a href="#apis/{{api.basePath}}/resources">Resources</a> (5), <a href="#apis{{api.basePath}}/models">Models</a> (3)</td>
+			<td>
+				<a href="#apis/{{api.basePath}}/resources">Resources</a> (5), 
+				<a href="#apis{{api.basePath}}/models">Models</a> (3)
+				<span class="pull-right"><a data-toggle="modal" href="#popConfirmDeleteApi" ng-click="confirmDelete(api)"><i class="icon-trash"></i></a></span>
+			</td>
+		</tr>
+		<tr ng-hide="apis.length > 0">
+			<td colspan="4">No APIs yet. Create one or use the Import button at the top to load from an URL.</td>
 		</tr>
 	</tbody>
 </table>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#popApi">Criar Nova API</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#popApi" ng-click="newApi()">Create new API</button>
 
 <div id="popApi" class="modal hide fade">
   <div class="modal-header">
@@ -32,19 +34,34 @@ outros usuários.</p>
   <div class="modal-body">
     <form>
     	<label>Name:</label>
-    	<input type="text" class="span12"/>
+    	<input type="text" class="span12" ng-model="currentApi.name"/>
     	
     	<label>Description:</label>
-    	<textarea class="span12" rows="5"></textarea>
+    	<textarea class="span12" rows="5" ng-model="currentApi.description"></textarea>
 
-    	<label>Base Domain:</label>
-    	<input type="text" class="span12"/>
+    	<label>Base Path:</label>
+    	<input type="text" class="span12"ng-model="currentApi.basePath"/>
 
     </form>
   </div>
   <div class="modal-footer">
 	<button type="button" class="btn" data-dismiss="modal">Cancel</button>
-    <button type="button" class="btn btn-primary">Save</a>
+    <button type="button" class="btn btn-primary" ng-click="saveApi()">Save</a>
+  </div>
+</div>
+
+<div id="popConfirmDeleteApi" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Delete API</h3>
+  </div>
+  <div class="modal-body">
+	<p>Are you sure you want to completely remove the API "{{apiToDelete.name}}"?</p>
+	<p>This action cannot be undone!</p>
+  </div>
+  <div class="modal-footer">
+	<button type="button" class="btn" data-dismiss="modal">Cancel</button>
+    <button type="button" class="btn btn-danger" ng-click="deleteApi()">Yes, delete it!</a>
   </div>
 </div>
 
